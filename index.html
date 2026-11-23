@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Shoes Description Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:Arial;padding:20px;background:#f8f8f8;text-align:center}
+input{width:90%;max-width:400px;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px;margin-top:8px}
+button{padding:12px 25px;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-top:10px}
+#genBtn{background:black;color:white}
+#copyBtn{background:#25D366;color:white;display:none}
+#waBtn{background:#25D366;color:white;display:none}
+#result{background:white;padding:15px;border-radius:10px;margin-top:15px;text-align:left;white-space:pre-wrap;min-height:100px}
+</style>
+</head>
+<body>
+<h2>👟 Shoes Description Generator</h2>
+<input id="product" placeholder="Shoes ka naam, jaise Boots">
+<br>
+<input id="price" placeholder="Price likho, jaise 2500" type="number">
+<br>
+<input id="size" placeholder="Size likho, jaise 40, 41, 42">
+<br>
+<button id="genBtn" onclick="generate()">Generate ✨</button>
+<p id="result">Yahan description aayegi...</p>
+<button id="copyBtn" onclick="copyText()">📋 Copy Karo</button>
+<button id="waBtn" onclick="shareWA()">💬 WhatsApp pe Bhejo</button>
+<script>
+async function generate(){
+let p=document.getElementById('product').value;
+let pr=document.getElementById('price').value;
+let s=document.getElementById('size').value;
+if(!p){alert("Pehle naam likho");return;}
+document.getElementById('result').innerText="Ban rahi hai...";
+let r=await fetch('/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product:p,price:pr,size:s})});
+let d=await r.json();
+let t=d.text||d.result||d.description||"Error aaya";
+document.getElementById('result').innerText=t;
+document.getElementById('copyBtn').style.display='inline-block';
+document.getElementById('waBtn').style.display='inline-block';
+}
+function copyText(){
+let t=document.getElementById('result').innerText;
+navigator.clipboard.writeText(t);
+alert("Copy ho gaya!");
+}
+function shareWA(){
+let t=document.getElementById('result').innerText;
+let url="https://wa.me/?text="+encodeURIComponent(t);
+window.open(url,"_blank");
+}
+</script>
+</body>
+</html>
